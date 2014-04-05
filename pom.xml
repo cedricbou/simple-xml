@@ -3,9 +3,37 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>foop</groupId>
+  	<groupId>foop</groupId>
 	<artifactId>simple-xml</artifactId>
 	<version>0.2.0-SNAPSHOT</version>
+
+	<developers>
+		<developer>
+			<name>Cédric Bou</name>
+			<email>cedricb1101@gmail.com</email>
+			<timezone>+2</timezone>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>github</system>
+		<url>http://github.com/cedricbou/simple-xml/issues#issue/</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:ssh://git@github.com/cedricbou/simple-xml.git</connection>
+		<url>http://github.com/cedricbou/simple-xml</url>
+		<developerConnection>scm:git:ssh://git@github.com/cedricbou/simple-xml.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
 	<dependencies>
 		<dependency>
@@ -22,6 +50,7 @@
 	</dependencies>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.axiom>1.2.14</version.axiom>
 	</properties>
 
