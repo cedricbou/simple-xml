@@ -7,57 +7,53 @@ import org.apache.axiom.om.OMXMLBuilderFactory;
 
 import com.google.common.collect.ImmutableMap;
 
-public class SimpleXml implements MaybeNode {
+public class SimpleXml extends WithNamespaceRegistryAndPath implements MaybeNode {
 
-	private final ElementNode root;
-	
-	/*
-	 * Map containing prefixes and associated namespace.
-	 */
-	private final ImmutableMap<String, String> ns;
+	private final MaybeNode root;
 
 	public SimpleXml(final String content) {
+		super(ImmutableMap.<String, String>of(), new PathBuilder());
 		this.root = buildRoot(content, Charset.defaultCharset());
-		this.ns = ImmutableMap.<String, String>of();
 	}
 
 	public SimpleXml(final String content, final Charset charset) {
+		super(ImmutableMap.<String, String>of(), new PathBuilder());
 		this.root = buildRoot(content, charset);
-		this.ns = ImmutableMap.<String, String>of();
 	}
 
 	
-	private SimpleXml(final ElementNode root, final ImmutableMap<String, String> ns) {
-		this.root = root.withNS(ns);
-		this.ns = ns;
+	private SimpleXml(final MaybeNode root, final ImmutableMap<String, String> ns, final PathBuilder pathBuilder) {
+		super(ns, pathBuilder);
+		this.root = root;
 	}
 
-	private ElementNode buildRoot(final String content, final Charset charset) {
-		return (ElementNode)ElementNode.some(OMXMLBuilderFactory.createOMBuilder(
+	private MaybeNode buildRoot(final String content, final Charset charset) {
+		return new NodeFactory(registry()).newNode((OMXMLBuilderFactory.createOMBuilder(
 				new ByteArrayInputStream(content.getBytes(charset)))
-				.getDocumentElement());
-	}
-
-	public SimpleXml withNS(final String namespace, final String prefix) {
-		// FIXME : find a way to do it a la scala, with an immutable map : ns + (namespace -> prefix) with constant time insertion.
-		return new SimpleXml(root, ImmutableMap.<String, String>builder().putAll(ns).put(prefix, namespace).build());
+				.getDocumentElement()), pathBuilder());
 	}
 	
 	@Override
 	public MaybeNode get(String name) {
 		return root.get(name);
 	}
+
+	@Override
+	public MaybeNode get(int index) {
+		return root.get(index);
+	}
 	
 	@Override
-	public String value() {
-		return root.value();
+	public String text() {
+		return root.text();
 	}
 
 	@Override
-	public MaybeNode[] list() {
-		return root.list();
+	protected MaybeNode buildNodeWithNewNamespaceRegistry(
+			ImmutableMap<String, String> registry) {
+		return new SimpleXml(root, registry, pathBuilder());
 	}
-
+	
 	@Override
 	public String toString() {
 		return root.toString();

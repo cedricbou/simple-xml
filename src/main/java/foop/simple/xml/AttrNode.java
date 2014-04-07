@@ -1,33 +1,44 @@
 package foop.simple.xml;
 
-public class AttrNode implements MaybeNode {
+import java.util.Map;
+
+public class AttrNode extends WithPathBuilder implements MaybeNode {
 
 	private final String value;
-	
-	private final static MaybeNode[] NONE = new MaybeNode[] {};
-	
-	protected AttrNode(final String value) {
+
+	protected AttrNode(final String value, final PathBuilder pathBuilder) {
+		super(pathBuilder);
 		this.value = value;
 	}
-	
+
 	@Override
 	public MaybeNode get(String name) {
-		return ElementNode.UNDEF;
+		return NodeFactory.noneNode(pathBuilder());
 	}
-	
+
 	@Override
-	public MaybeNode[] list() {
-		return NONE;
+	public MaybeNode get(int index) {
+		return NodeFactory.noneNode(pathBuilder());
 	}
-	
+
 	@Override
-	public String value() {
+	public String text() {
 		return value;
 	}
-	
+
 	@Override
 	public String toString() {
-		return value();
+		return text();
 	}
-	
+
+	@Override
+	public MaybeNode withNS(Map<String, String> namespaces) {
+		return this;
+	}
+
+	@Override
+	public MaybeNode withNS(String namespace, String prefix) {
+		return this;
+	}
+
 }

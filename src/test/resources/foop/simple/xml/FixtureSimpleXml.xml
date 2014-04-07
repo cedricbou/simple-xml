@@ -7,6 +7,20 @@
 		<oneof them="is present" />
 	</things>
 	
+	<truc>
+		<foo>
+			<bar to="foo">
+				Hello World!
+			</bar>
+			<oof>
+				This is <code>a code</code> from outer space.
+			</oof>
+			<rab>
+				<![CDATA[  Hello <p>paragraph</p> World!  ]]>
+			</rab>
+		</foo>
+	</truc>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.ws.commons.axiom</groupId>
