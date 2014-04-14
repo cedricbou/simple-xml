@@ -8,6 +8,11 @@ import org.apache.axiom.om.OMElement;
 
 import com.google.common.collect.ImmutableMap;
 
+/**
+ * A node without neighbours.
+ * @author Cedric
+ *
+ */
 public class SingleNode extends WithNamespaceRegistryAndPath implements MaybeNode {
 
 	private final OMElement element;
