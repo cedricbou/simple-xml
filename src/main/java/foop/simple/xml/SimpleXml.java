@@ -83,11 +83,16 @@ public class SimpleXml extends WithNamespaceRegistryAndPath implements
 	public String text() {
 		return root.text();
 	}
+	
+	@Override
+	public boolean isNone() {
+		return root.isNone();
+	}
 
 	@Override
 	protected MaybeNode buildNodeWithNewNamespaceRegistry(
 			ImmutableMap<String, String> registry) {
-		return new SimpleXml(root, registry, pathBuilder());
+		return root.withNS(registry);
 	}
 
 	@Override

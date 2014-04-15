@@ -36,5 +36,11 @@ public interface MaybeNode extends NamespaceSupport, PathSupport {
 	 * node, it returns all element texts concatened together.
 	 */
 	public String text();
+	
+	/**
+	 * Returns true if the current node is a NoneNode.
+	 * @return true if this instanceof NoneNode.
+	 */
+	public boolean isNone();
 
 }

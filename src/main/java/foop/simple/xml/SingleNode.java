@@ -35,7 +35,7 @@ public class SingleNode extends WithNamespaceRegistryAndPath implements MaybeNod
 		final String attr = element.getAttributeValue(qname);
 
 		if (attr == null) {
-			return new NodeFactory(registry())
+			return factory()
 					.newNode(element, qname, pathBuilder().withPart(name));
 		} else {
 			return new AttrNode(attr, pathBuilder().withAttribute(name));
@@ -52,12 +52,17 @@ public class SingleNode extends WithNamespaceRegistryAndPath implements MaybeNod
 			final OMElement first = element.getFirstElement();
 			return factory().newNode(first, pathBuilder().withPart("any").atIndex(0));
 		}
-		return NodeFactory.noneNode(pathBuilder());
+		return NodeFactory.noneNode(pathBuilder().atIndex(index));
 	}
 
 	@Override
 	public String text() {
 		return element.getText().trim();
+	}
+	
+	@Override
+	public boolean isNone() {
+		return false;
 	}
 
 	@Override

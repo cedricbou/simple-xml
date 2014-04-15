@@ -40,5 +40,10 @@ public class AttrNode extends WithPathBuilder implements MaybeNode {
 	public MaybeNode withNS(String namespace, String prefix) {
 		return this;
 	}
+	
+	@Override
+	public boolean isNone() {
+		return false;
+	}
 
 }

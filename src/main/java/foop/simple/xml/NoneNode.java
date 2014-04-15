@@ -46,4 +46,9 @@ public class NoneNode extends WithPathBuilder implements MaybeNode {
 	public String toString() {
 		return "undef";
 	}
+
+	@Override
+	public boolean isNone() {
+		return true;
+	}
 }

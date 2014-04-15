@@ -38,9 +38,13 @@ public class ArrayNodeFromParent extends WithNamespaceRegistryAndPath implements
 
 	@Override
 	public MaybeNode get(int index) {
-		return factory().newNode(
-				Iterators.get(iteratorBuilder.iterator(), index),
-				pathBuilder().atIndex(index));
+		try {
+			return factory().newNode(
+					Iterators.get(iteratorBuilder.iterator(), index),
+					pathBuilder().atIndex(index));
+		} catch (IndexOutOfBoundsException ioobe) {
+			return NodeFactory.noneNode(pathBuilder().atIndex(index));
+		}
 	}
 
 	@Override
@@ -70,5 +74,10 @@ public class ArrayNodeFromParent extends WithNamespaceRegistryAndPath implements
 								return el.toString();
 							}
 						}));
+	}
+
+	@Override
+	public boolean isNone() {
+		return false;
 	}
 }
