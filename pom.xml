@@ -5,6 +5,9 @@
 	<groupId>fr.foop.parsers</groupId>
 	<artifactId>simple-xml</artifactId>
 	<version>0.2.1-SNAPSHOT</version>
+	
+	<name>simple-xml</name>
+	<description>Easily parse and browse XML content</description>
 
 	<developers>
 		<developer>

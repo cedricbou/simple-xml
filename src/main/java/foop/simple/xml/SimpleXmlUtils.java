@@ -30,7 +30,6 @@ public class SimpleXmlUtils {
 			final String namespace = nsRegistry.get(split[0]);
 
 			if (namespace != null) {
-				System.out.println(namespace + ":" + split[1]);
 				return new QName(namespace, split[1]);
 			} else {
 				return new QName(split[1]);
