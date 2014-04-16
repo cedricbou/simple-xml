@@ -5,9 +5,11 @@
 	<groupId>fr.foop.parsers</groupId>
 	<artifactId>simple-xml</artifactId>
 	<version>0.2.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	
 	<name>simple-xml</name>
 	<description>Easily parse and browse XML content</description>
+	<url>http://simplexml.foop.fr</url>
 
 	<developers>
 		<developer>
