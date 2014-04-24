@@ -24,6 +24,10 @@ public class PathBuilder {
 		return new PathBuilder(currentPath + "/@" + attr);
 	}
 	
+	public PathBuilder withFindPredicate(final String predicate) {
+		return new PathBuilder(currentPath + "[" + predicate + "]");
+	}
+	
 	public String path() {
 		return currentPath;
 	}

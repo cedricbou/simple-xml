@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Stopwatch;
 import com.google.common.io.ByteStreams;
 
@@ -36,24 +37,24 @@ public class HowToUseTest {
 		// Parse a XML
 		final SimpleXml xml = new SimpleXml(
 				"<foo xmlns:classify=\"urn:shelves-classification-system\" xmlns:doc=\"urn:doc-marker\">"
-				+ "  <name>John Doe</name>"
-				+ "   <title lang=\"eng\">Unknown Personae</title>"
-				+ "   <bars>"
-				+ "      <bar>one</bar>"
-				+ "      <bar>two</bar>"
-				+ "   </bars>"
-				+ "   <books>"
-				+ "      <book isbn=\"123456789\" classify:shelves=\"F4:G7\">"
-				+ "         <title>Simple XML in practice</title>"
-				+ "         <doc:description>Simple XML in practice, get ready in two pages.</doc:description>"
-				+ "      </book>"
-				+ "      <book isbn=\"987654321\" classify:shelves=\"A3:C45\">"
-				+ "         <title>Apache AXIOM : the definitive guide</title>"
-				+ "         <doc:description>Using Apache AXIOM with ease, become an API expert.</doc:description>"
-				+ "         <classify:description>This is the shelves left to the door from the second floor.</classify:description>"
-				+ "      </book>"
-				+ "   </books>"
-				+ "</foo>");
+						+ "  <name>John Doe</name>"
+						+ "   <title lang=\"eng\">Unknown Personae</title>"
+						+ "   <bars>"
+						+ "      <bar>one</bar>"
+						+ "      <bar>two</bar>"
+						+ "   </bars>"
+						+ "   <books>"
+						+ "      <book isbn=\"123456789\" classify:shelves=\"F4:G7\">"
+						+ "         <title>Simple XML in practice</title>"
+						+ "         <doc:description>Simple XML in practice, get ready in two pages.</doc:description>"
+						+ "      </book>"
+						+ "      <book isbn=\"987654321\" classify:shelves=\"A3:C45\">"
+						+ "         <title>Apache AXIOM : the definitive guide</title>"
+						+ "         <doc:description>Using Apache AXIOM with ease, become an API expert.</doc:description>"
+						+ "         <classify:description>This is the shelves left to the door from the second floor.</classify:description>"
+						+ "      </book>"
+						+ "   </books>" 
+						+ "</foo>");
 
 		// Read an attribute
 		final String lang = xml.get("title").get("lang").text();
@@ -84,27 +85,48 @@ public class HowToUseTest {
 
 		// Getting the text value would return null
 		assertEquals(null, blackhole2.text());
-		
+
 		// And how can I read elements with namespaces ?
 		// Just use the tag name
-		assertEquals("Simple XML in practice, get ready in two pages.",
-				xml.get("books").get("book").get(0).get("description").text());
-				
-		// You can actually use any prefix as the parser would ignore 
-		// it if it has not been explicitly asked in the parser (see below). 
-		assertEquals("Simple XML in practice, get ready in two pages.",
-				xml.get("books").get("book").get(0).get("doc:description").text());
-		
-		assertEquals("Simple XML in practice, get ready in two pages.",
-				xml.get("books").get("book").get(0).get("anythingunknown:description").text());
-				
+		assertEquals("Simple XML in practice, get ready in two pages.", xml
+				.get("books").get("book").get(0).get("description").text());
+
+		// You can actually use any prefix as the parser would ignore
+		// it if it has not been explicitly asked in the parser (see below).
+		assertEquals("Simple XML in practice, get ready in two pages.", xml
+				.get("books").get("book").get(0).get("doc:description").text());
+
+		assertEquals(
+				"Simple XML in practice, get ready in two pages.",
+				xml.get("books").get("book").get(0)
+						.get("anythingunknown:description").text());
+
 		// You can declare your own namespace prefix to resolve name conflicts
-		final MaybeNode withNS = xml
-				.withNS("myprefix_forshelves", "urn:shelves-classification-system")
-				.withNS("myprefix_fordoc", "urn:doc-marker");
+		final MaybeNode withNS = xml.withNS("myprefix_forshelves",
+				"urn:shelves-classification-system").withNS("myprefix_fordoc",
+				"urn:doc-marker");
+
+		assertEquals(
+				"This is the shelves left to the door from the second floor.",
+				withNS.get("books").get("book").get(1)
+						.get("myprefix_forshelves:description").text());
+		assertEquals(
+				"Using Apache AXIOM with ease, become an API expert.",
+				withNS.get("books").get("book").get(1)
+						.get("myprefix_fordoc:description").text());
 		
-		assertEquals("This is the shelves left to the door from the second floor.", withNS.get("books").get("book").get(1).get("myprefix_forshelves:description").text());
-		assertEquals("Using Apache AXIOM with ease, become an API expert.", withNS.get("books").get("book").get(1).get("myprefix_fordoc:description").text());
+		// You can find a node by its attribute and value 
+		assertEquals("Apache AXIOM : the definitive guide",
+				xml.get("books").get("book")
+					.findByValue("isbn", "987654321")
+					.get("title").text());
+
+		assertEquals("Using Apache AXIOM with ease, become an API expert.",
+				withNS.get("books").get("book")
+					.findByValue("myprefix_forshelves:shelves", "A3:C45")
+					.get("myprefix_fordoc:description").text());
+		
+				
 	}
 
 	@Test
@@ -114,6 +136,46 @@ public class HowToUseTest {
 		assertTrue(xml.get("soap:Body").toString()
 				.contains("<ChangeAngleUnitResult>1."));
 	}
+
+	@Test
+	public void testFindByAttrValue() {
+		final SimpleXml xml = new SimpleXml(FIXTURE_SIMPLE_XML);
+		
+		assertNotNull(xml.get("nodes").get("node").get(1).get("poi")
+				.findByValue("type", "attraction"));
+		assertTrue(xml.get("nodes").get("node").get(1).get("poi")
+				.findByValue("type", "attraction") instanceof SingleNode);
+		assertEquals("ParadiZoo",
+				xml.get("nodes").get("node").get(1).get("poi")
+						.findByValue("type", "attraction").get("name").text());
+		
+		assertTrue(xml.get("things") instanceof SingleNode);
+		assertEquals("here", xml.get("things").findByValue("them", "is present").text());
+		assertTrue(xml.get("things").findByValue("them", "is absent").isNone());
+
+	}
+
+	@Test
+	public void testFind() {
+		final SimpleXml xml = new SimpleXml(FIXTURE_SIMPLE_XML);
+		
+		final MaybeNode node = xml.get("nodes").get("node").get(1).get("poi").find(new Predicate<MaybeNode>() {
+			public boolean apply(final MaybeNode node) {
+				final MaybeNode type = node.get("type");
+				if(!type.isNone()) {
+					if("attraction".equals(type.text())) {
+						return true;
+					}
+				}
+				return false;
+			}
+		} );
+		
+		assertNotNull(node);
+		assertTrue(node instanceof SingleNode);
+		assertEquals("ParadiZoo", node.get("name").text());
+	}
+
 
 	@Test
 	public void testArrayToString() {

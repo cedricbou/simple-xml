@@ -7,8 +7,11 @@ import org.apache.axiom.om.OMElement;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
+
+import foop.simple.xml.predicates.MatchNameAndValue;
 
 /**
  * A node representing an array of nodes.
@@ -57,6 +60,26 @@ public class ArrayNodeFromParent extends WithNamespaceRegistryAndPath implements
 								return el.getText();
 							}
 						}));
+	}
+
+	@Override
+	public MaybeNode find(final Predicate<MaybeNode> predicate) {
+		final Iterator<OMElement> iterator = iteratorBuilder.iterator();
+		final PathBuilder pathBuilder = pathBuilder().withFindPredicate(predicate.getClass().getName());
+		
+		while(iterator.hasNext()) {
+			final MaybeNode node = factory().newNode(iterator.next(), pathBuilder);
+			if(predicate.apply(node)) {
+				return node;
+			}
+		}
+		
+		return NodeFactory.noneNode(pathBuilder);
+	}
+	
+	@Override
+	public MaybeNode findByValue(String name, String value) {
+		return find(new MatchNameAndValue(name, value));
 	}
 
 	protected MaybeNode buildNodeWithNewNamespaceRegistry(

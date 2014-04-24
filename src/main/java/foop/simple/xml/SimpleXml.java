@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.om.util.StAXParserConfiguration;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -95,6 +96,16 @@ public class SimpleXml extends WithNamespaceRegistryAndPath implements
 		return root.withNS(registry);
 	}
 
+	@Override
+	public MaybeNode find(Predicate<MaybeNode> predicate) {
+		return root.find(predicate);
+	}
+	
+	@Override
+	public MaybeNode findByValue(String name, String value) {
+		return root.findByValue(name, value);
+	}
+	
 	@Override
 	public String toString() {
 		return root.toString();

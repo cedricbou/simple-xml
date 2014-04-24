@@ -2,6 +2,8 @@ package foop.simple.xml;
 
 import java.util.Map;
 
+import com.google.common.base.Predicate;
+
 /**
  * A none node represents a node not existing in the parsed XML.
  * 
@@ -50,5 +52,15 @@ public class NoneNode extends WithPathBuilder implements MaybeNode {
 	@Override
 	public boolean isNone() {
 		return true;
+	}
+	
+	@Override
+	public MaybeNode find(Predicate<MaybeNode> predicate) {
+		return this;
+	}
+	
+	@Override
+	public MaybeNode findByValue(String name, String value) {
+		return this;
 	}
 }

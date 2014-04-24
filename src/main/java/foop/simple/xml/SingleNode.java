@@ -6,14 +6,19 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
+
+import foop.simple.xml.predicates.MatchNameAndValue;
 
 /**
  * A node without neighbours.
+ * 
  * @author Cedric
- *
+ * 
  */
-public class SingleNode extends WithNamespaceRegistryAndPath implements MaybeNode {
+public class SingleNode extends WithNamespaceRegistryAndPath implements
+		MaybeNode {
 
 	private final OMElement element;
 
@@ -35,8 +40,8 @@ public class SingleNode extends WithNamespaceRegistryAndPath implements MaybeNod
 		final String attr = element.getAttributeValue(qname);
 
 		if (attr == null) {
-			return factory()
-					.newNode(element, qname, pathBuilder().withPart(name));
+			return factory().newNode(element, qname,
+					pathBuilder().withPart(name));
 		} else {
 			return new AttrNode(attr, pathBuilder().withAttribute(name));
 		}
@@ -50,7 +55,8 @@ public class SingleNode extends WithNamespaceRegistryAndPath implements MaybeNod
 	public MaybeNode get(int index) {
 		if (index == 0) {
 			final OMElement first = element.getFirstElement();
-			return factory().newNode(first, pathBuilder().withPart("any").atIndex(0));
+			return factory().newNode(first,
+					pathBuilder().withPart("any").atIndex(0));
 		}
 		return NodeFactory.noneNode(pathBuilder().atIndex(index));
 	}
@@ -59,10 +65,26 @@ public class SingleNode extends WithNamespaceRegistryAndPath implements MaybeNod
 	public String text() {
 		return element.getText().trim();
 	}
-	
+
 	@Override
 	public boolean isNone() {
 		return false;
+	}
+
+	@Override
+	public MaybeNode find(final Predicate<MaybeNode> predicate) {
+		final MaybeNode zero = get(0);
+		if (predicate.apply(zero)) {
+			return zero;
+		}
+		
+		return NodeFactory.noneNode(pathBuilder().withFindPredicate(
+				predicate.getClass().getName()));
+	}
+	
+	@Override
+	public MaybeNode findByValue(String name, String value) {
+		return find(new MatchNameAndValue(name, value));
 	}
 
 	@Override

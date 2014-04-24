@@ -4,7 +4,7 @@
 	</build>
 	
 	<things>
-		<oneof them="is present" />
+		<oneof them="is present">here</oneof>
 	</things>
 	
 	<truc>
@@ -20,6 +20,18 @@
 			</rab>
 		</foo>
 	</truc>
+	
+	
+	<nodes>
+		<node number="1" committer="John Doe" />
+		<node number="2" committer="John Doe">
+			<poi name="Central Station" type="station" />
+			<poi name="ParadiZoo" type="attraction" />
+			<poi name="Pizza Shop" type="restauration" />
+			<poi name="Police Station" />
+		</node>
+		<node number="3" committer="Allan DoLittle" />
+	</nodes>
 	
 	<dependencies>
 		<dependency>

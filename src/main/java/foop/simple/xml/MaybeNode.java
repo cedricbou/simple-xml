@@ -1,5 +1,7 @@
 package foop.simple.xml;
 
+import com.google.common.base.Predicate;
+
 /**
  * Every XML node is seen as a MaybeNode, it can represent a real node, or a
  * none node. None nodes are nodes containing nothing, they are used if you try
@@ -42,5 +44,19 @@ public interface MaybeNode extends NamespaceSupport, PathSupport {
 	 * @return true if this instanceof NoneNode.
 	 */
 	public boolean isNone();
+	
+	/**
+	 * Find the first node verifying the provided predicate.
+	 * @return some node or a none node if nothing was found.
+	 */
+	public MaybeNode find(final Predicate<MaybeNode> predicate);
+	
+	/**
+	 * Find the first node with the specified tag or attribute text equals to the provided value.
+	 * @param name The name of the tag or attribute {@see get}.
+	 * @param value The expected value.
+	 * @return The first node matching name and value or a none node.
+	 */
+	public MaybeNode findByValue(final String name, final String value);
 
 }

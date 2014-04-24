@@ -2,6 +2,8 @@ package foop.simple.xml;
 
 import java.util.Map;
 
+import com.google.common.base.Predicate;
+
 public class AttrNode extends WithPathBuilder implements MaybeNode {
 
 	private final String value;
@@ -44,6 +46,16 @@ public class AttrNode extends WithPathBuilder implements MaybeNode {
 	@Override
 	public boolean isNone() {
 		return false;
+	}
+	
+	@Override
+	public MaybeNode find(Predicate<MaybeNode> predicate) {
+		return NodeFactory.noneNode(pathBuilder());
+	}
+	
+	@Override
+	public MaybeNode findByValue(String name, String value) {
+		return NodeFactory.noneNode(pathBuilder());
 	}
 
 }
